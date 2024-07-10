@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+
+  app:
+    image: choieunsoh/my-ts-template
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deploy
+    ports:
+      - "5000:4000"

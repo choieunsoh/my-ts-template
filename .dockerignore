@@ -6,12 +6,13 @@ build
 Dockerfile*
 *.yml
 dist
-*.yaml
 helm
 database
 *.md
 .env*
-.eslintrc.json
 *ignore
 .aws
 *.iso
+.eslintrc.json
+.eslintrc.js
+.prettierrc

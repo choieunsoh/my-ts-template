@@ -1,33 +1,20 @@
-FROM node:18-slim AS base
+FROM node:18-alpine AS base
+RUN npm i -g pnpm
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#   Build stage
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-FROM base AS builder
-
+FROM base AS dependencies
 WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
-COPY ["package.json", "yarn.lock", "./"]
-
-RUN yarn install --frozen-lockfile
-
+FROM base AS build
+WORKDIR /app
 COPY . .
+COPY --from=dependencies /app/node_modules ./node_modules
+RUN pnpm build
+RUN pnpm prune --prod
 
-RUN yarn run build
-
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#   Run stage
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-FROM base AS final
-
+FROM base AS deploy
 WORKDIR /app
-
-COPY ["package.json", "yarn.lock", "./"]
-
-RUN yarn install --frozen-lockfile --production
-
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 4000
-
-CMD ["node", "dist/index"]
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+CMD [ "node", "dist/index.js" ]
