@@ -169,7 +169,7 @@ import app from './app';
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  // console.log(`Server is running on port ${PORT}`);
 });
 ```
 
@@ -207,13 +207,15 @@ describe('GET /api/health', () => {
 Update the `scripts` section in your `package.json`:
 
 ```json
-"scripts": {
-  "build": "tsc",
-  "start": "ts-node src/index.ts",
-  "lint": "eslint . --ext .ts",
-  "lint:fix": "eslint . --ext .ts --fix",
-  "format": "prettier --write \"src/**/*.ts\"",
-  "test": "jest"
+{
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "jest"
+  }
 }
 ```
 
