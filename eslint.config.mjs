@@ -73,8 +73,8 @@ const configs = antfu(
     },
   },
   {
-    name: 'kiattipong/package-json',
-    files: ['package.json'],
+    name: 'kiattipong/json',
+    files: ['**/*.json'],
     rules: {
       'style/eol-last': 'off',
     },
