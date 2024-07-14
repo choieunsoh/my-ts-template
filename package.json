@@ -56,6 +56,6 @@
     "*.{json,yaml,md}": "prettier --write --ignore-unknown"
   },
   "volta": {
-    "node": "18.20.3"
+    "node": "20.15.1"
   }
 }
