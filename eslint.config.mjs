@@ -44,6 +44,9 @@ const configs = antfu(
   },
   {
     ...securityPlugin.configs.recommended,
+    rules: {
+      'security/detect-object-injection': 'off',
+    },
   },
   {
     // Other flat config
