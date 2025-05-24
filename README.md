@@ -1,247 +1,212 @@
-Step-by-step guide to create a Node.js application using TypeScript, Jest, Prettier, ESLint, Express, MongoDB client, and pnpm as the package manager.
+# my-ts-template
 
-### Step 1: Setup pnpm
+## Description
 
-First, you need to have `pnpm` installed. If you don't have it yet, you can install it globally using npm:
+A TypeScript Express.js project template designed for quick setup and development. It includes essential tools for building robust and maintainable web applications.
 
-```sh
-npm install -g pnpm
-```
+## Features
 
-### Step 2: Create a New Project
+*   TypeScript for static typing
+*   Express.js framework for building APIs
+*   Jest for unit and integration testing
+*   ESLint for code linting
+*   Prettier for code formatting
+*   Husky for pre-commit hooks (linting and formatting)
+*   Docker support for containerization (`Dockerfile` and `docker-compose.yml`)
+*   Environment variable management with `.env` files
+*   Basic health check endpoint (`/api/health`)
+*   Bun support for running and development (as seen in `package.json` scripts)
 
-Create a new directory for your project and initialize a new pnpm project:
+## Prerequisites
 
-```sh
-mkdir my-app
-cd my-app
-pnpm init
-```
+Before you begin, ensure you have the following installed:
+*   Node.js (v20.15.1 recommended - as per `package.json` Volta config)
+*   pnpm (or npm/yarn if you prefer, though `pnpm-lock.yaml` is present)
+*   Optionally, Bun for using Bun-specific scripts (`dev:bun`, `start`)
+*   Optionally, Docker Desktop for containerized development and deployment
 
-### Step 3: Install Dependencies
+## Getting Started
 
-Install the necessary dependencies:
+### Installation
 
-```sh
-pnpm add express mongodb
-pnpm add -D typescript ts-node @types/node @types/express jest ts-jest @types/jest prettier eslint eslint-config-prettier eslint-plugin-prettier eslint-plugin-node eslint-plugin-import
+1.  Navigate to your project's root directory.
+2.  Install dependencies (choose your preferred package manager, pnpm is used for the lockfile):
+    ```bash
+    # Using pnpm
+    pnpm install
 
-pnpm add supertest
-pnpm add -D @types/supertest
-```
+    # Or using npm
+    # npm install
 
-### Step 4: Set Up TypeScript
+    # Or using yarn
+    # yarn install
+    ```
 
-Create a `tsconfig.json` file in the root of your project:
+## Environment Configuration
 
+This project uses `.env` files for environment variable management.
+1.  Create a `.env` file by copying the sample:
+    ```bash
+    cp .env.sample .env
+    ```
+2.  Modify the `.env` file with your specific configurations. The primary variable used by default is `PORT` for the server.
+
+## Available Scripts
+
+Here are the main scripts available in this project:
+
+*   `clean`: Removes `node_modules`, `dist`, and `coverage` directories.
+    ```bash
+    pnpm clean
+    ```
+*   `build`: Compiles TypeScript to JavaScript, outputting to the `dist` directory.
+    ```bash
+    pnpm build
+    ```
+*   `dev`: Starts the application in development mode with `nodemon` for automatic restarts on file changes.
+    ```bash
+    pnpm dev
+    ```
+*   `dev:bun`: Starts the application in development mode using `bun --hot` for hot reloading.
+    ```bash
+    pnpm dev:bun
+    ```
+*   `start`: Starts the application using `bun src/index.ts`. (Note: For production, it's generally recommended to run the compiled JavaScript from the `dist` folder, e.g., `node dist/index.js` or `bun dist/index.js` after `pnpm build`).
+    ```bash
+    pnpm start
+    ```
+*   `lint`: Lints the codebase using ESLint.
+    ```bash
+    pnpm lint
+    ```
+*   `lint:fix`: Lints the codebase and attempts to fix issues automatically.
+    ```bash
+    pnpm lint:fix
+    ```
+*   `format`: Formats the code using Prettier.
+    ```bash
+    pnpm format
+    ```
+*   `test`: Runs tests using Jest.
+    ```bash
+    pnpm test
+    ```
+*   `lint-staged`: Runs linters on staged files (part of pre-commit hook).
+*   `prepare`: Sets up Husky pre-commit hooks.
+
+## Running the Application
+
+### Development Mode
+
+For development, you can use either `nodemon` (with Node.js) or `bun` for hot reloading:
 ```bash
-tsc --init
+# Using nodemon (Node.js)
+pnpm dev
 ```
-
-or
-
-```json
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
-  },
-  "include": ["src"],
-  "exclude": ["node_modules"]
-}
+Or with Bun:
+```bash
+pnpm dev:bun
 ```
+The server will start on the port specified in your `.env` file (default is `4000` as per `.env.sample`).
 
-### Step 5: Set Up ESLint
+### Production Mode
 
-Create a `.eslintrc.js` file:
+For a production environment, it's recommended to build the project first and then run the compiled JavaScript:
+1.  Build the application:
+    ```bash
+    pnpm build
+    ```
+2.  Run the application:
+    ```bash
+    node dist/index.js
+    ```
+    Alternatively, if using Bun as your runtime in production:
+    ```bash
+    bun dist/index.js
+    ```
+    Ensure your `.env` file has the correct production settings.
 
-```javascript
-module.exports = {
-  parser: '@typescript-eslint/parser',
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-  ],
-  parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: 'module',
-  },
-  rules: {},
-  settings: {
-    'import/resolver': {
-      typescript: {},
-    },
-  },
-};
+## Running Tests
+
+To run the test suite (using Jest):
+```bash
+pnpm test
 ```
+This will execute all `*.spec.ts` and `*.test.ts` files.
 
-Create an `.eslintignore` file:
+## Linting and Formatting
 
-```plaintext
-node_modules
-dist
+To check for linting issues:
+```bash
+pnpm lint
 ```
-
-### Step 6: Set Up Prettier
-
-Create a `.prettierrc` file:
-
-```json
-{
-  "singleQuote": true,
-  "trailingComma": "all"
-}
+To automatically fix linting and formatting issues:
+```bash
+pnpm lint:fix
+pnpm format
 ```
+These are also run automatically on staged files before commits thanks to Husky and lint-staged.
 
-Create a `.prettierignore` file:
+## Building for Production
 
-```plaintext
-node_modules
-dist
+To compile the TypeScript code to JavaScript for production deployment:
+```bash
+pnpm build
 ```
+The compiled output will be placed in the `dist` directory.
 
-### Step 7: Set Up Jest
+## Docker Support
 
-Create a `jest.config.js` file:
-
-```javascript
-module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  moduleFileExtensions: ['ts', 'js'],
-  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
-};
+This project includes a `Dockerfile` and `docker-compose.yml` for containerization.
+To build and run the application using Docker Compose:
+```bash
+# Ensure your .env file is configured, Docker Compose will use it
+docker-compose up --build
 ```
+To run in detached mode:
+```bash
+docker-compose up --build -d
+```
+To stop the services:
+```bash
+docker-compose down
+```
+The `Dockerfile` is optimized for production builds by default.
 
-### Step 8: Create the App Structure
-
-Create the following folder structure:
+## Project Structure
 
 ```
-my-app
-├── src
-│   ├── controllers
-│   ├── models
-│   ├── routes
-│   ├── services
-│   ├── app.ts
-│   └── index.ts
-├── tests
-│   └── example.test.ts
-├── .eslintrc.js
-├── .eslintignore
-├── .prettierrc
-├── .prettierignore
-├── jest.config.js
-├── package.json
-├── pnpm-lock.yaml
-└── tsconfig.json
+my-ts-template/
+├── .husky/             # Husky pre-commit hooks
+├── dist/               # Compiled JavaScript output (after build)
+├── node_modules/       # Project dependencies
+├── src/                # Source code
+│   ├── app.ts          # Express application setup
+│   ├── config.ts       # Configuration loader (e.g., for .env)
+│   ├── index.ts        # Application entry point
+│   ├── routes/         # API route definitions
+│   │   └── index.ts    # Main router
+│   ├── *.spec.ts       # Test files
+├── .env.sample         # Sample environment variables
+├── .eslintrc.mjs       # ESLint configuration
+├── .gitignore          # Git ignore rules
+├── .prettierrc         # Prettier configuration
+├── Dockerfile          # Docker build instructions
+├── docker-compose.yml  # Docker Compose configuration
+├── jest.config.js      # Jest test runner configuration
+├── package.json        # Project metadata and dependencies
+├── pnpm-lock.yaml      # PNPM lock file
+├── README.md           # This file
+└── tsconfig.json       # TypeScript compiler options (for development)
+└── tsconfig.prod.json  # TypeScript compiler options (for production builds)
 ```
 
-### Step 9: Write the Code
+## Contributing
 
-#### `src/app.ts`
+Contributions are welcome! Please feel free to submit a Pull Request.
+If you find any issues or have suggestions for improvements, please open an issue in the repository.
+Ensure your code adheres to the linting and formatting standards by running `pnpm lint:fix` and `pnpm format` before committing.
 
-```typescript
-import express from 'express';
-import bodyParser from 'body-parser';
-import routes from './routes';
+## License
 
-const app = express();
-
-app.use(bodyParser.json());
-app.use('/api', routes);
-
-export default app;
-```
-
-#### `src/index.ts`
-
-```typescript
-import app from './app';
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  // console.log(`Server is running on port ${PORT}`);
-});
-```
-
-#### `src/routes/index.ts`
-
-```typescript
-import { Router } from 'express';
-
-const router = Router();
-
-router.get('/health', (req, res) => {
-  res.status(200).send('OK');
-});
-
-export default router;
-```
-
-#### `tests/example.test.ts`
-
-```typescript
-import request from 'supertest';
-import app from '../src/app';
-
-describe('GET /api/health', () => {
-  it('should return OK', async () => {
-    const res = await request(app).get('/api/health');
-    expect(res.status).toBe(200);
-    expect(res.text).toBe('OK');
-  });
-});
-```
-
-### Step 10: Add Scripts to `package.json`
-
-Update the `scripts` section in your `package.json`:
-
-```json
-{
-  "scripts": {
-    "build": "tsc",
-    "start": "ts-node src/index.ts",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "test": "jest"
-  }
-}
-```
-
-### Step 11: Run the Application
-
-1. **Lint** your code:
-
-   ```sh
-   pnpm run lint
-   ```
-
-2. **Format** your code:
-
-   ```sh
-   pnpm run format
-   ```
-
-3. **Run** your tests:
-
-   ```sh
-   pnpm run test
-   ```
-
-4. **Start** the application:
-   ```sh
-   pnpm run start
-   ```
-
-You now have a fully set up Node.js application with TypeScript, Jest, Prettier, ESLint, Express, MongoDB client, and pnpm.
+This project is licensed under the ISC License. You may want to create a `LICENSE` file in the root of your project with the full ISC license text.
